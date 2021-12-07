@@ -13,6 +13,7 @@ from models.my_model import MyModel
 from utils.load_dataset import load_dataset, split_dataset
 from utils.logging import init_logging, log_visualizations, log_losses, log_final
 from utils.visualization import create_visualizations, save_visualizations
+from utils.general_utils import timestamp
 
 def run(cfg):
 
@@ -158,10 +159,31 @@ if __name__ == '__main__':
     with open("config.json", "w") as config_file:
         config = json.load(config_file)
 
-    parser = argparse.ArgumentParser(description=config["PROJECT_NAME"])
-    parser.add_argument("--a", type=float, default=config["a"], help="parameter a")
-    parser.add_argument("--b", type=str, default=config["b"], help="parameter b")
-    parser.add_argument("--c", type=bool, default=config["c"], action="store_true", help="parameter c")
+    parser = argparse.ArgumentParser(description=config["project_name"])
+    parser.add_argument("--data-dir", type=str, required=True, help="Path to dataset directory")
+    parser.add_argument("--no-train", action="store_true", default=config["no_train"],
+                        help="If specified, the training loop is skipped")
+    parser.add_argument("--no-vis", action="store_true", default=config["no_vis"],
+                        help="If specified, the visualization loops are skipped")
+    parser.add_argument("--vis-every", type=int, default=config["vis_every"],
+                        help="visualize predictions after every Nth epoch")
+    parser.add_argument("--num-vis", type=int,  default=config["num_vis"],
+                        help="Number of visualized datapoints")
+    parser.add_argument("--no-wandb", action="store_true", default=config["no_wandb"],
+                        help="If specified, skips usage of WandB for logging")
+    parser.add_argument("--seed", type=int,  default=config["seed"],
+                        help="Seed for RNGs (python, numpy, pytorch)")
+    parser.add_argument("--lr", type=float, default=config["lr"],
+                        help="Learning rate")
+    parser.add_argument("--batch-size", type=int, default=config["batch_size"],)
+    parser.add_argument("--epochs", type=int,  default=config["epochs"])
+    parser.add_argument("--device", type=str, choices=["cuda", "cpu"],
+                        default="cuda" if torch.cuda.is_available() else "cpu")
+    parser.add_argument("--out-dir", type=str, default=f"out/{timestamp()}",
+                        help="Output path for results (models, visualizations...)")
+    parser.add_argument("--val-criterion", default=config["val_criterion"],
+                        help="Loss to use for determining if validated model has become 'better' and should be saved")
+
     args = parser.parse_args()
-    args.project_name = config["PROJECT_NAME"]
+    args.project_name = config["project_name"]
     run(args)

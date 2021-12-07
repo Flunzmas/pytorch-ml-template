@@ -1,6 +1,13 @@
 {
-    "PROJECT_NAME": "my ML project",
-    "a": 1.0,
-    "b": "abc",
-    "c": false
+    "project_name": "my ML project",
+    "no_train": false,
+    "no_vis": false,
+    "vis_every": 10,
+    "num_vis": 10,
+    "no_wandb": false,
+    "seed": 42,
+    "lr": 0.0001,
+    "batch_size": 32,
+    "epochs": 300,
+    "val_criterion": "none"
 }
